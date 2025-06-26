@@ -1,43 +1,10 @@
 .sidebar {
-    background: #fff;
-    color: #fff;
+    background: #f0f2f5;
     height: 100%;
     width: 250px;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid #eee;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.03);
-}
-
-.sidebar-tabs {
-    display: flex;
-    flex-direction: column;
-    border-bottom: 1px solid #f0f0f0;
-    background: #fafbfc;
-}
-
-.sidebar-tab {
-    padding: 14px 24px;
-    cursor: pointer;
-    background: transparent;
-    color: #222;
-    font-weight: 500;
-    font-size: 16px;
-    transition: background 0.18s, color 0.18s;
-    border: none;
-    outline: none;
-}
-
-.sidebar-tab.active {
-    background: #e3eaff;
-    color: #1976d2;
-    font-weight: 700;
-    border-left: 4px solid #1976d2;
-}
-
-.sidebar-tab:not(.active):hover {
-    background: #f5f7fa;
-    color: #1976d2;
+    border-right: 1px solid #e0e0e0;
 }
 
 .sidebar-tree {
@@ -47,16 +14,87 @@
     background: #fff;
 }
 
-.MuiTreeItem-label {
-    font-size: 15px;
-    color: #333;
+.tree-node {
+    margin-left: 8px;
+}
+
+.tree-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 6px 8px;
     border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+    font-weight: 500;
+}
+
+.tree-label:hover {
+    background: #f5f7fa;
+    color: #1976d2;
+}
+
+.tree-label.selected {
+    background: #e3eaff;
+    color: #1976d2;
+    font-weight: 700;
+    border-left: 4px solid #1976d2;
+}
+
+.tree-label.expanded {
+    background: #f0f4ff;
+}
+
+.tree-arrow {
+    margin-right: 6px;
+    font-size: 12px;
+}
+
+.tree-icon {
+    margin-right: 6px;
+    font-size: 16px;
+}
+
+.tree-label-text {
+    font-size: 15px;
+}
+
+.tree-children {
+    margin-left: 16px;
+    border-left: 2px solid #f0f0f0;
+    padding-left: 4px;
+}
+
+.sidebar-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #666;
+    font-style: italic;
+}
+
+.sidebar-header {
+    background: #f0f2f5;
+    padding: 10px 12px 8px 12px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.sidebar-refresh-btn {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    color: #1976d2;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
     padding: 4px 8px;
+    border-radius: 4px;
     transition: background 0.15s;
 }
 
-.MuiTreeItem-label:hover,
-.Mui-selected>.MuiTreeItem-content .MuiTreeItem-label {
+.sidebar-refresh-btn:hover {
     background: #e3eaff;
-    color: #1976d2;
 }

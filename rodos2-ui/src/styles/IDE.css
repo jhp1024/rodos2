@@ -3,6 +3,7 @@
   flex-direction: column;
   height: 100vh;
   width: 100%;
+  background: #f5f7fa;
 }
 
 /* 탭 메뉴 스타일 */
@@ -16,7 +17,7 @@
 
 .tab {
   padding: 8px 12px;
-  color: #cccccc;
+  color: white;
   cursor: pointer;
   border-right: 1px solid #3c3c3c;
 }
@@ -31,12 +32,13 @@
   display: flex;
   flex: 1;
   overflow: hidden;
+  background: #fafbfc;
 }
 
 /* 사이드바 스타일 */
 .sidebar {
   width: 250px;
-  background-color: #252526;
+  background-color: #cccccc;
   color: #cccccc;
   padding: 10px 0;
 }
@@ -63,30 +65,6 @@
   font-family: 'Consolas', 'Courier New', monospace;
   font-size: 14px;
   line-height: 1.5;
-}
-
-/* === 상단 탭 스타일 === */
-.top-tabs {
-  display: flex;
-  background: #e0e0e0;
-  height: 36px;
-  align-items: center;
-  border-bottom: 1px solid #bdbdbd;
-}
-
-.top-tab {
-  padding: 0 24px;
-  font-weight: 500;
-  color: #333;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  border-right: 1px solid #bdbdbd;
-}
-
-.top-tab:last-child {
-  border-right: none;
 }
 
 /* === 메뉴바 스타일 === */

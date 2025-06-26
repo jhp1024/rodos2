@@ -1,38 +1,93 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import '../styles/IDnTypePage.css';
 
-function IDnTypePage({ idnType, onChange }) {
+function IDnTypePage({ idnType, onChange, genInfo, moduleID }) {
+    const initIdnType = idnType || {};
+    const initGenInfo = genInfo || {};
+
+    // genInfo.idType이 변경될 때 idnType.IDtype도 자동으로 업데이트
+    useEffect(() => {
+        if (initGenInfo.idType && initGenInfo.idType !== initIdnType.IDtype) {
+            if (onChange) {
+                onChange({
+                    ...(initIdnType || {}),
+                    IDtype: initGenInfo.idType
+                });
+            }
+        }
+    }, [initGenInfo.idType, initIdnType, onChange]);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        console.log(`IDnTypePage - handleInputChange: ${name} = ${value}`);
+        if (onChange) {
+            const newData = { ...(initIdnType || {}), [name]: value, moduleID };
+            console.log(`IDnTypePage - calling onChange with:`, newData);
+            onChange(newData);
+        }
+    };
+
     return (
-        <div>
-            <h3>ID 및 타입 입력</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                <label>
-                    Type
-                    <input
-                        type="text"
-                        value={idnType.type}
-                        onChange={e => onChange({ ...idnType, type: e.target.value })}
-                        style={{ width: '100%', padding: 6, marginTop: 4 }}
-                    />
-                </label>
-                <label>
-                    ID
-                    <input
-                        type="text"
-                        value={idnType.ID}
-                        onChange={e => onChange({ ...idnType, ID: e.target.value })}
-                        style={{ width: '100%', padding: 6, marginTop: 4 }}
-                    />
-                </label>
-                <label>
-                    informationModelVersion
-                    <input
-                        type="text"
-                        value={idnType.informationModelVersion}
-                        onChange={e => onChange({ ...idnType, informationModelVersion: e.target.value })}
-                        style={{ width: '100%', padding: 6, marginTop: 4 }}
-                    />
-                </label>
-            </div>
+        <div className="idntype-page">
+            <form className="form" onSubmit={e => e.preventDefault()}>
+                <div className="form-row">
+                    <div className="input-group full-width">
+                        <label htmlFor="moduleName">Module Name</label>
+                        <input
+                            id="moduleName"
+                            type="text"
+                            value={initGenInfo.moduleName || ''}
+                            disabled
+                        />
+                    </div>
+                </div>
+                <div className="form-row">
+                    <div className="input-group full-width">
+                        <label htmlFor="idType">ID Type</label>
+                        <input
+                            id="idType"
+                            type="text"
+                            value={initIdnType.IDtype || ''}
+                            disabled
+                        />
+                    </div>
+                </div>
+                <div className="form-row">
+                    <div className="input-group full-width">
+                        <label htmlFor="moduleId">Module ID</label>
+                        <input
+                            id="moduleId"
+                            type="text"
+                            value={moduleID || ''}
+                            disabled
+                        />
+                    </div>
+                </div>
+                <div className="form-row">
+                    <div className="input-group full-width">
+                        <label htmlFor="manufacturer">Manufacturer</label>
+                        <input
+                            id="manufacturer"
+                            type="text"
+                            value={initGenInfo.manufacturer || ''}
+                            disabled
+                        />
+                    </div>
+                </div>
+                <div className="form-row">
+                    <div className="input-group full-width">
+                        <label htmlFor="infoModelVersion">InfoModelVersion</label>
+                        <input
+                            id="infoModelVersion"
+                            name="infoModelVersion"
+                            type="text"
+                            value={initIdnType.infoModelVersion || '1.0'}
+                            onChange={handleInputChange}
+                            placeholder="Enter info model version"
+                        />
+                    </div>
+                </div>
+            </form>
         </div>
     );
 }

@@ -19,6 +19,9 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("com.fasterxml.jackson.core:jackson-databind")
+	implementation("com.fasterxml.jackson.module:jackson-module-jsonSchema")
+	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	developmentOnly("org.springframework.boot:spring-boot-devtools") // Live Reload 기능 활성화
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
