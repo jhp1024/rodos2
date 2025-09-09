@@ -14,19 +14,20 @@ public class Infrastructure {
 	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private List<InfraType> databases;
 
-	@JacksonXmlElementWrapper(useWrapping = false)
-	@JacksonXmlProperty(localName = "Middleware")
+	@JacksonXmlElementWrapper(localName = "Middleware")
+	@JacksonXmlProperty(localName = "item")
 	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private List<InfraType> middlewares;
 
-	@JacksonXmlProperty(localName = "Communications")
-	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private Communications communications;
+	@JacksonXmlElementWrapper(useWrapping = false)
+	@JacksonXmlProperty(localName = "comms")
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
+	private List<Communications> communications;
 
 	public Infrastructure() {
 		this.databases = new ArrayList<>();
 		this.middlewares = new ArrayList<>();
-		this.communications = new Communications();
+		this.communications = new ArrayList<>();
 	}
 
 	public List<InfraType> getDatabases() {
@@ -42,12 +43,21 @@ public class Infrastructure {
 		}
 	}
 
-	public Communications getCommunications() {
+	public List<Communications> getCommunications() {
 		return this.communications;
 	}
 
-	public void setCommunications(Communications communications) {
+	public void setCommunications(List<Communications> communications) {
 		this.communications = communications;
+	}
+
+	public void addCommunications(Communications communications) {
+		if (this.communications != null) {
+			this.communications.add(communications);
+		} else {
+			this.communications = new ArrayList<>();
+			this.communications.add(communications);
+		}
 	}
 
 	public List<InfraType> getMiddlewares() {

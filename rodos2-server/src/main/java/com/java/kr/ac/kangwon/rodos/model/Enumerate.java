@@ -16,7 +16,7 @@ public class Enumerate {
 	}
 
 	public enum NoBit {
-		_16, _32, _64, _null
+		BIT64, BIT32, BIT16
 	}
 
 	public enum OriginType {

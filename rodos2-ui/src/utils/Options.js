@@ -68,19 +68,6 @@ export const TYPE_OPTIONS = [
     { value: 'time', label: 'time' },
     { value: 'datetime', label: 'datetime' },
     { value: 'timestamp', label: 'timestamp' },
-    { value: 'uuid', label: 'uuid' },
-    { value: 'guid', label: 'guid' },
-    { value: 'url', label: 'url' },
-    { value: 'email', label: 'email' },
-    { value: 'phone', label: 'phone' },
-    { value: 'ip', label: 'ip' },
-    { value: 'mac', label: 'mac' },
-    { value: 'json', label: 'json' },
-    { value: 'xml', label: 'xml' },
-    { value: 'html', label: 'html' },
-    { value: 'css', label: 'css' },
-    { value: 'sql', label: 'sql' },
-    { value: 'regex', label: 'regex' },
     { value: 'custom', label: '직접입력' },
 ];
 
@@ -269,14 +256,14 @@ export const REQ_TYPE_OPTIONS = [
 ];
 
 export const INSTANCE_TYPES_OPTIONS = [
-    { value: '', label: 'Select Instance Type' },
+    { value: '', label: 'Select InstanceType' },
     { value: 'Singleton', label: 'Singleton' },
     { value: 'MultitionStatic', label: 'MultitionStatic' },
     { value: 'MultitionComm', label: 'MultitionComm' },
 ];
 
 export const OP_TYPES_OPTIONS = [
-    { value: '', label: 'Select Operation Type' },
+    { value: '', label: 'Select OpType' },
     { value: 'PERIODIC', label: 'PERIODIC' },
     { value: 'EVENTDRIVEN', label: 'EVENTDRIVEN' },
     { value: 'NONRT', label: 'NONRT' },
@@ -540,8 +527,8 @@ export const OS_NAME_OPTIONS = [
 ];
 
 // 특정 OS의 버전 옵션을 가져오는 함수
-export const getOSVersionOptions = (osName) => {
-    const os = OS_OPTIONS.find(os => os.name === osName);
+export const getOSVersionOptions = (osname) => {
+    const os = OS_OPTIONS.find(os => os.name === osname);
     if (!os) return [{ value: '', label: 'Select Version' }];
 
     return [

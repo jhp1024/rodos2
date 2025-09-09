@@ -4,10 +4,10 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public class RangeString {
 
-	@JacksonXmlProperty(localName = "min")
+	@JacksonXmlProperty(isAttribute = true, localName = "min")
 	private String min;
 
-	@JacksonXmlProperty(localName = "max")
+	@JacksonXmlProperty(isAttribute = true, localName = "max")
 	private String max;
 
 	public RangeString() {

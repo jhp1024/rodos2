@@ -10,36 +10,42 @@ import com.java.kr.ac.kangwon.rodos.model.Enumerate;
 
 public class Property {
 
-	@JacksonXmlProperty(localName = "complexType")
+	@JacksonXmlProperty(isAttribute = true)
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private Enumerate.ComplexType complexType;
 
-	@JacksonXmlProperty(localName = "name")
+	@JacksonXmlProperty(isAttribute = true)
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private String name;
 
-	private String complex;
-
-	@JacksonXmlProperty(localName = "complexName")
+	@JacksonXmlProperty(isAttribute = true)
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private String complexName;
 
-	@JacksonXmlProperty(localName = "type")
+	@JacksonXmlProperty(isAttribute = true)
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private String type;
 
-	@JacksonXmlProperty(localName = "unit")
+	@JacksonXmlProperty(isAttribute = true)
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private String unit;
 
-	@JacksonXmlProperty(localName = "description")
+	@JacksonXmlProperty(isAttribute = true)
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private String description;
 
-	@JacksonXmlProperty(localName = "values")
+	@JacksonXmlProperty(isAttribute = true)
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private Values values;
 
 	// Property 리스트를 XML에서 처리
 	@JacksonXmlElementWrapper(useWrapping = false) // 래퍼 엘리먼트 없이
-	@JacksonXmlProperty(localName = "property") // 각 항목을 "property"로
+	@JacksonXmlProperty(localName = "Property") // 각 항목을 "Property"로
 	@JsonInclude(JsonInclude.Include.NON_EMPTY) // 빈 리스트는 제외
-	public List<Property> properties;
+	private List<Property> properties;
 
 	public Property() {
+		this.complexType = Enumerate.ComplexType.NONE;
 		this.values = new Values();
 	}
 
@@ -74,14 +80,6 @@ public class Property {
 
 	public String getName() {
 		return name;
-	}
-
-	public String getComplex() {
-		return complex;
-	}
-
-	public void setComplex(String mComplex) {
-		this.complex = mComplex;
 	}
 
 	public void setType(String type) {

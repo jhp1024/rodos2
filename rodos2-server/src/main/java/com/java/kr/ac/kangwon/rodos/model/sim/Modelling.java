@@ -3,8 +3,13 @@ package com.java.kr.ac.kangwon.rodos.model.sim;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
 public class Modelling {
 
+	@JacksonXmlElementWrapper(localName = "ModelCases")
+	@JacksonXmlProperty(localName = "modelCase")
 	public List<ModelCase> list_simulationModel;
 
 	public void addSimModel(ModelCase modelCase) {

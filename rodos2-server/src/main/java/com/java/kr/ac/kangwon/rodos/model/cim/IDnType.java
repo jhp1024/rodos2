@@ -4,21 +4,21 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public class IDnType {
 
-	@JacksonXmlProperty(localName = "IDtype")
-	protected String IDtype;
+	@JacksonXmlProperty(isAttribute = true)
+	protected String type;
 
 	@JacksonXmlProperty(localName = "ModuleID")
 	protected ModuleID moduleID;
 
-	@JacksonXmlProperty(localName = "InformationModelVersion")
+	@JacksonXmlProperty(localName = "informationModelVersion")
 	protected String informationModelVersion;
 
-	public String getIDtype() {
-		return IDtype;
+	public String getType() {
+		return type;
 	}
 
-	public void setIDtype(String mIDtype) {
-		this.IDtype = mIDtype;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public ModuleID getModuleID() {

@@ -1,27 +1,29 @@
 package com.java.kr.ac.kangwon.rodos.controller;
 
-import com.java.kr.ac.kangwon.rodos.model.sim.SoftwareModule;
-import com.java.kr.ac.kangwon.rodos.service.SoftwareModuleService;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
-import com.fasterxml.jackson.module.jsonSchema.JsonSchemaGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.jsonSchema.JsonSchema;
+import com.fasterxml.jackson.module.jsonSchema.JsonSchemaGenerator;
+import com.java.kr.ac.kangwon.rodos.model.RobotInfo;
+import com.java.kr.ac.kangwon.rodos.model.SharedUserState;
+import com.java.kr.ac.kangwon.rodos.model.cim.CompModule;
+import com.java.kr.ac.kangwon.rodos.model.sim.SoftwareModule;
+import com.java.kr.ac.kangwon.rodos.service.SharedUserStateService;
+import com.java.kr.ac.kangwon.rodos.service.SoftwareModuleService;
+import com.java.kr.ac.kangwon.rodos.service.rest.agent.SimulationConfig;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -29,6 +31,9 @@ public class ModuleController {
 
     @Autowired
     private SoftwareModuleService softwareModuleService;
+
+    @Autowired
+    private SharedUserStateService sharedUserStateService;
 
     @GetMapping("/api/model/sim")
     public JsonSchema getModuleSchema() throws Exception {
@@ -55,7 +60,7 @@ public class ModuleController {
 
             SoftwareModule softwareModule = mapper.readValue(moduleData, SoftwareModule.class);
 
-            System.out.println("genInfo: " + softwareModule.getGenInfo());
+            System.out.println("moduleName: " + softwareModule.getModuleName());
             System.out.println("idnType: " + softwareModule.getIdnType());
             System.out.println("properties: " + softwareModule.getProperties());
             System.out.println("ioVariables: " + softwareModule.getIoVariables());
@@ -96,19 +101,18 @@ public class ModuleController {
             System.out.println("Parsing JSON to SoftwareModule...");
             SoftwareModule softwareModule = mapper.readValue(moduleData, SoftwareModule.class);
             System.out.println("SoftwareModule parsed successfully");
-            System.out.println("genInfo: " + softwareModule.getGenInfo());
+            System.out.println("moduleName: " + softwareModule.getModuleName());
             System.out.println("idnType: " + softwareModule.getIdnType());
             System.out.println("properties: " + softwareModule.getProperties());
             System.out.println("ioVariables: " + softwareModule.getIoVariables());
             System.out.println("infrastructure: " + softwareModule.getInfrastructure());
             System.out.println("executableForm: " + softwareModule.getExecutableForm());
 
-            // XML 변환 - 들여쓰기와 줄바꿈 적용
+            // XML 변환
             System.out.println("Converting to XML...");
             com.fasterxml.jackson.dataformat.xml.XmlMapper xmlMapper = new com.fasterxml.jackson.dataformat.xml.XmlMapper();
-            xmlMapper.enable(com.fasterxml.jackson.core.JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN);
-            // XML 포맷팅 설정
             xmlMapper.enable(com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT);
+            xmlMapper.configure(com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
             String xml = xmlMapper.writeValueAsString(softwareModule);
             System.out.println("XML generated successfully");
             System.out.println("XML preview: " + xml.substring(0, Math.min(xml.length(), 200)) + "...");
@@ -129,24 +133,63 @@ public class ModuleController {
     @PostMapping("/api/module/save-xml")
     public ResponseEntity<String> saveModuleXML(@RequestBody String moduleData) {
         try {
+            System.out.println("=== Save Module XML Request ===");
+            System.out.println("Received module data: " + moduleData);
+
             ObjectMapper mapper = new ObjectMapper();
-            // JSON 파싱 설정 개선
+            mapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             mapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT,
                     true);
-            mapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             mapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
             mapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);
-            mapper.configure(com.fasterxml.jackson.databind.DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL,
-                    true);
 
-            SoftwareModule softwareModule = mapper.readValue(moduleData, SoftwareModule.class);
+            // JSON에서 type 필드를 먼저 확인하여 모듈 타입 결정
+            com.fasterxml.jackson.databind.JsonNode rootNode = mapper.readTree(moduleData);
+            String moduleType = rootNode.has("type") ? rootNode.get("type").asText() : "SIM";
 
-            // XML 변환 - 들여쓰기와 줄바꿈 적용
-            com.fasterxml.jackson.dataformat.xml.XmlMapper xmlMapper = new com.fasterxml.jackson.dataformat.xml.XmlMapper();
-            xmlMapper.enable(com.fasterxml.jackson.core.JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN);
-            // XML 포맷팅 설정
-            xmlMapper.enable(com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT);
-            String xml = xmlMapper.writeValueAsString(softwareModule);
+            System.out.println("Detected module type: " + moduleType);
+
+            String xml;
+            String moduleName;
+            String filePrefix;
+
+            if ("Composite".equals(moduleType)) {
+                // Composite 모듈 처리
+                CompModule compModule = mapper.readValue(moduleData, CompModule.class);
+                System.out.println("CompModule parsed successfully");
+                System.out.println("moduleName: " + compModule.getModuleName());
+                System.out.println("manufacturer: " + compModule.getManufacturer());
+
+                // SimulationConfig 업데이트 (Modelling 정보에서 추출)
+                String selectedRobotName = rootNode.has("selectedRobotName")
+                        ? rootNode.get("selectedRobotName").asText()
+                        : null;
+                updateSimulationConfigFromModelling(compModule, selectedRobotName);
+
+                // XML 변환
+                com.fasterxml.jackson.dataformat.xml.XmlMapper xmlMapper = new com.fasterxml.jackson.dataformat.xml.XmlMapper();
+                xmlMapper.enable(com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT);
+                xmlMapper.configure(com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+                xml = xmlMapper.writeValueAsString(compModule);
+
+                moduleName = (compModule.getModuleName() != null) ? compModule.getModuleName() : "composite_module";
+                filePrefix = "composite";
+            } else {
+                // Software 모듈 처리 (기존 로직)
+                SoftwareModule softwareModule = mapper.readValue(moduleData, SoftwareModule.class);
+                System.out.println("SoftwareModule parsed successfully");
+                System.out.println("moduleName: " + softwareModule.getModuleName());
+
+                // XML 변환
+                com.fasterxml.jackson.dataformat.xml.XmlMapper xmlMapper = new com.fasterxml.jackson.dataformat.xml.XmlMapper();
+                xmlMapper.enable(com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT);
+                xmlMapper.configure(com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+                xml = xmlMapper.writeValueAsString(softwareModule);
+
+                moduleName = (softwareModule.getModuleName() != null) ? softwareModule.getModuleName()
+                        : "software_module";
+                filePrefix = "software";
+            }
 
             // Module Info 디렉토리 생성
             String moduleInfoDir = ".rodos/WorkSpace/Module Info";
@@ -155,13 +198,9 @@ public class ModuleController {
                 Files.createDirectories(moduleInfoPath);
             }
 
-            // 파일명 생성 (GenInfo.ModuleName.xml)
-            String moduleName = (softwareModule.getGenInfo() != null
-                    && softwareModule.getGenInfo().getModuleName() != null)
-                            ? softwareModule.getGenInfo().getModuleName()
-                            : "software_module";
+            // 파일명 생성
             if (moduleName.trim().isEmpty()) {
-                moduleName = "software_module";
+                moduleName = filePrefix + "_module";
             }
             String fileName = moduleName + ".xml";
             Path filePath = moduleInfoPath.resolve(fileName);
@@ -180,80 +219,143 @@ public class ModuleController {
         }
     }
 
-    @GetMapping("/api/workspace/structure")
-    public ResponseEntity<List<Map<String, Object>>> getWorkspaceStructure() {
+    /**
+     * Composite 모듈의 Modelling 정보에서 SimulationConfig를 업데이트하고 SharedUserState에 저장
+     * 선택된 로봇만 업데이트하여 각 로봇의 개별 모델링 정보를 보존
+     */
+    private void updateSimulationConfigFromModelling(CompModule compModule, String selectedRobotName) {
         try {
-            List<Map<String, Object>> structure = new ArrayList<>();
+            if (compModule.getModelling() != null && compModule.getModelling().getList_simulationModel() != null) {
+                var simulationModels = compModule.getModelling().getList_simulationModel();
 
-            // .rodos/WorkSpace 디렉토리 경로
-            Path workspacePath = Paths.get(".rodos", "WorkSpace");
+                // SharedUserState에서 Robot 정보 가져오기
+                SharedUserState state = sharedUserStateService.loadCurrentState();
+                if (state.getEditors() != null && state.getEditors().getSystem() != null
+                        && state.getEditors().getSystem().getRobots() != null) {
 
-            if (!Files.exists(workspacePath)) {
-                // 디렉토리가 없으면 기본 구조 생성
-                Files.createDirectories(workspacePath);
-                Files.createDirectories(workspacePath.resolve("Configuration"));
-                Files.createDirectories(workspacePath.resolve("Module Info"));
-            }
+                    // 선택된 로봇만 SimulationConfig 생성/업데이트
+                    if (selectedRobotName != null && !selectedRobotName.trim().isEmpty()) {
+                        System.out.println("선택된 로봇: " + selectedRobotName);
 
-            // WorkSpace 루트 노드
-            Map<String, Object> workspaceNode = new HashMap<>();
-            workspaceNode.put("key", "workspace");
-            workspaceNode.put("label", "WorkSpace");
+                        // 선택된 로봇 찾기
+                        RobotInfo selectedRobot = null;
+                        for (var robot : state.getEditors().getSystem().getRobots()) {
+                            if (robot.getName() != null && robot.getName().equals(selectedRobotName)) {
+                                selectedRobot = robot;
+                                break;
+                            }
+                        }
 
-            List<Map<String, Object>> workspaceChildren = new ArrayList<>();
+                        if (selectedRobot != null) {
+                            for (var simulationModel : simulationModels) {
+                                if (simulationModel.getSimulator() != null
+                                        && !simulationModel.getSimulator().trim().isEmpty()) {
 
-            // Configuration 디렉토리
-            Path configPath = workspacePath.resolve("Configuration");
-            Map<String, Object> configNode = new HashMap<>();
-            configNode.put("key", "configuration");
-            configNode.put("label", "Configuration");
+                                    // 기존 SimulationConfig 찾기
+                                    SimulationConfig existingConfig = null;
+                                    if (state.getSimulationInfo() != null
+                                            && state.getSimulationInfo().getSimulationConfigs() != null) {
+                                        for (var config : state.getSimulationInfo().getSimulationConfigs()) {
+                                            if (config.getRobotName() != null
+                                                    && config.getRobotName().equals(selectedRobot.getName())) {
+                                                existingConfig = config;
+                                                break;
+                                            }
+                                        }
+                                    }
 
-            List<Map<String, Object>> configChildren = new ArrayList<>();
-            if (Files.exists(configPath)) {
-                try (Stream<Path> paths = Files.list(configPath)) {
-                    paths.filter(Files::isRegularFile)
-                            .forEach(file -> {
-                                Map<String, Object> fileNode = new HashMap<>();
-                                fileNode.put("key", "config_" + file.getFileName().toString());
-                                fileNode.put("label", file.getFileName().toString());
-                                fileNode.put("path", file.toString());
-                                configChildren.add(fileNode);
-                            });
+                                    if (existingConfig != null) {
+                                        // 기존 config가 있으면 simulator, path만 업데이트 (namespace, x, y, theta는 유지)
+                                        System.out.println(
+                                                "로봇 " + selectedRobot.getName() + "의 기존 SimulationConfig 업데이트:");
+                                        System.out.println("  - 기존 simulator: " + existingConfig.getSimulator() + " -> "
+                                                + simulationModel.getSimulator());
+
+                                        existingConfig.setSimulatorName(simulationModel.getSimulator());
+
+                                        // Model Files에서 model_path 추출
+                                        if (simulationModel.getModelFiles() != null
+                                                && !simulationModel.getModelFiles().isEmpty()) {
+                                            var firstModelFile = simulationModel.getModelFiles().get(0);
+                                            if (firstModelFile.getFilePath() != null
+                                                    && !firstModelFile.getFilePath().trim().isEmpty()) {
+                                                System.out.println("  - 기존 path: " + existingConfig.getPath() + " -> "
+                                                        + firstModelFile.getFilePath());
+                                                existingConfig.setPath(firstModelFile.getFilePath());
+                                            }
+                                        }
+
+                                        // 업데이트된 config 저장
+                                        sharedUserStateService.addSimulationConfig(existingConfig);
+
+                                        System.out.println("SimulationConfig 업데이트 완료: " + selectedRobot.getName());
+                                        System.out.println("  - Simulator: " + existingConfig.getSimulator());
+                                        System.out.println("  - Model Path: " + existingConfig.getPath());
+                                    } else {
+                                        // 기존 config가 없으면 새로운 SimulationConfig 생성
+                                        SimulationConfig newConfig = new SimulationConfig();
+                                        newConfig.setRobotName(selectedRobot.getName());
+
+                                        // Robot의 simulation 정보에서 namespace, x, y, theta 가져오기
+                                        if (selectedRobot.getSimulation() != null) {
+                                            System.out.println(
+                                                    "로봇 " + selectedRobot.getName() + "의 simulation 정보: namespace="
+                                                            + selectedRobot.getSimulation().getNamespace() +
+                                                            ", x=" + selectedRobot.getSimulation().getX() + ", y="
+                                                            + selectedRobot.getSimulation().getY() +
+                                                            ", theta=" + selectedRobot.getSimulation().getTheta());
+                                            newConfig.setNamespace(selectedRobot.getSimulation().getNamespace());
+                                            newConfig.setX(selectedRobot.getSimulation().getX());
+                                            newConfig.setY(selectedRobot.getSimulation().getY());
+                                            newConfig.setTheta(selectedRobot.getSimulation().getTheta());
+                                        } else {
+                                            System.out.println(
+                                                    "로봇 " + selectedRobot.getName() + "의 simulation 정보가 없음 - 기본값 사용");
+                                            newConfig.setNamespace(selectedRobot.getName());
+                                            newConfig.setX("0");
+                                            newConfig.setY("0");
+                                            newConfig.setTheta("0");
+                                        }
+
+                                        // Composite 모듈에서 simulator, path 가져오기
+                                        newConfig.setSimulatorName(simulationModel.getSimulator());
+
+                                        // Model Files에서 model_path 추출
+                                        if (simulationModel.getModelFiles() != null
+                                                && !simulationModel.getModelFiles().isEmpty()) {
+                                            var firstModelFile = simulationModel.getModelFiles().get(0);
+                                            if (firstModelFile.getFilePath() != null
+                                                    && !firstModelFile.getFilePath().trim().isEmpty()) {
+                                                newConfig.setPath(firstModelFile.getFilePath());
+                                            }
+                                        }
+
+                                        // 새로운 config 저장
+                                        sharedUserStateService.addSimulationConfig(newConfig);
+
+                                        System.out.println("새로운 SimulationConfig 생성 완료: " + selectedRobot.getName());
+                                        System.out.println("  - RobotName: " + newConfig.getRobotName());
+                                        System.out.println("  - Namespace: " + newConfig.getNamespace());
+                                        System.out.println("  - Position: x=" + newConfig.getX() + ", y="
+                                                + newConfig.getY() + ", theta=" + newConfig.getTheta());
+                                        System.out.println("  - Simulator: " + newConfig.getSimulator());
+                                        System.out.println("  - Model Path: " + newConfig.getPath());
+                                    }
+                                    break; // 첫 번째 simulationModel만 사용
+                                }
+                            }
+                        } else {
+                            System.out.println("선택된 로봇을 찾을 수 없음: " + selectedRobotName);
+                        }
+                    } else {
+                        System.out.println("선택된 로봇 정보가 없음 - SimulationConfig 업데이트 건너뜀");
+                    }
                 }
             }
-            configNode.put("children", configChildren);
-            workspaceChildren.add(configNode);
-
-            // Module Info 디렉토리
-            Path moduleInfoPath = workspacePath.resolve("Module Info");
-            Map<String, Object> moduleInfoNode = new HashMap<>();
-            moduleInfoNode.put("key", "moduleinfo");
-            moduleInfoNode.put("label", "Module Info");
-
-            List<Map<String, Object>> moduleInfoChildren = new ArrayList<>();
-            if (Files.exists(moduleInfoPath)) {
-                try (Stream<Path> paths = Files.list(moduleInfoPath)) {
-                    paths.filter(Files::isRegularFile)
-                            .forEach(file -> {
-                                Map<String, Object> fileNode = new HashMap<>();
-                                fileNode.put("key", "module_" + file.getFileName().toString());
-                                fileNode.put("label", file.getFileName().toString());
-                                fileNode.put("path", file.toString());
-                                moduleInfoChildren.add(fileNode);
-                            });
-                }
-            }
-            moduleInfoNode.put("children", moduleInfoChildren);
-            workspaceChildren.add(moduleInfoNode);
-
-            workspaceNode.put("children", workspaceChildren);
-            structure.add(workspaceNode);
-
-            return ResponseEntity.ok(structure);
         } catch (Exception e) {
-            System.out.println("ERROR in getWorkspaceStructure: " + e.getMessage());
+            System.err.println("Error updating SimulationConfig: " + e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.badRequest().build();
         }
     }
+
 }

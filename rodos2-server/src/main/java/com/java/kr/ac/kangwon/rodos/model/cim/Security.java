@@ -1,8 +1,13 @@
 package com.java.kr.ac.kangwon.rodos.model.cim;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.java.kr.ac.kangwon.rodos.model.Enumerate;
+import com.java.kr.ac.kangwon.rodos.model.cim.CyberSecurity;
 
 public class Security {
+
+	@JacksonXmlProperty(localName = "CyberSecurity")
+	private CyberSecurity cyberSecurity;
 
 	private Enumerate.SecurityType type;
 

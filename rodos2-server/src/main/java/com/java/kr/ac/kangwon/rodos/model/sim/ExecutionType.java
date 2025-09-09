@@ -5,10 +5,10 @@ import com.java.kr.ac.kangwon.rodos.model.Enumerate;
 
 public class ExecutionType {
 
-	@JacksonXmlProperty(localName = "priorty")
-	private String priorty;
+	@JacksonXmlProperty(localName = "priority")
+	private String priority;
 
-	@JacksonXmlProperty(localName = "opType")
+	@JacksonXmlProperty(localName = "optype")
 	private Enumerate.OpTypes opType;
 
 	@JacksonXmlProperty(localName = "hardRT")
@@ -20,9 +20,9 @@ public class ExecutionType {
 	@JacksonXmlProperty(localName = "instanceType")
 	private Enumerate.InstanceTypes instanceType;
 
-	public ExecutionType(String priorty, Enumerate.OpTypes opType, String hardRT, String timeConstraint,
+	public ExecutionType(String priority, Enumerate.OpTypes opType, String hardRT, String timeConstraint,
 			Enumerate.InstanceTypes instanceType) {
-		this.priorty = priorty;
+		this.priority = priority;
 		this.opType = opType;
 		this.hardRT = hardRT;
 		this.timeConstraint = timeConstraint;
@@ -30,10 +30,6 @@ public class ExecutionType {
 	}
 
 	public ExecutionType() {
-	}
-
-	public String[] getInfo() {
-		return new String[] { priorty, opType.toString(), hardRT, timeConstraint, instanceType.toString() };
 	}
 
 	public Enumerate.OpTypes getOPType() {
@@ -68,11 +64,11 @@ public class ExecutionType {
 		this.opType = mOPType;
 	}
 
-	public String getPriorty() {
-		return priorty;
+	public String getPriority() {
+		return priority;
 	}
 
-	public void setPriorty(String priorty) {
-		this.priorty = priorty;
+	public void setPriority(String priority) {
+		this.priority = priority;
 	}
 }

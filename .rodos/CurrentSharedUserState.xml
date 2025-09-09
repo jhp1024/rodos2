@@ -1,0 +1,77 @@
+<kr.ac.kangwon.rodos.model.SharedUserState sim_Mode="true">
+  <editors>
+    <System>
+      <Robot classifier="robot" name="Turtlebot3_Burger" ref="9ea2854471c7aaa50de0f513f0ee5d8c-f8ffffff-f0f0abab-405-140000-0" type="robot">
+        <style px="317.921875" py="474.0" width="338.0" height="383.0"/>
+        <simulation namespace="tb1" x="2" y="3" theta="1">
+          <SimulationConfigs>
+            <simulationConfigs>
+              <robotName>Turtlebot3_Burger</robotName>
+              <namespace>tb1</namespace>
+              <x>2</x>
+              <y>3</y>
+              <theta>1</theta>
+              <simulator>gazebo</simulator>
+              <path>/root/.gazebo/models/turtlebot3_burger/model.sdf</path>
+            </simulationConfigs>
+          </SimulationConfigs>
+        </simulation>
+        <Module type="software" name="laser_avoidance" ref="0c95eb9da4e156248d865fea1499ca3fff00000000000000baffffaa140000-00">
+          <style px="-4.0" py="0.0" width="76.0" height="76.0"/>
+        </Module>
+      </Robot>
+      <Robot classifier="robot" name="Turtlebot3_Waffle" ref="9ea2854471c7aaa50de0f513f0ee5d8c-f8fbabaf-f0f0abab-405-140000-0" type="robot">
+        <style px="759.921875" py="393.0" width="338.0" height="383.0"/>
+        <simulation namespace="tb2" x="1" y="3" theta="2">
+          <SimulationConfigs>
+            <simulationConfigs>
+              <robotName>Turtlebot3_Waffle</robotName>
+              <namespace>tb2</namespace>
+              <x>1</x>
+              <y>3</y>
+              <theta>2</theta>
+              <simulator>gazebo</simulator>
+              <path>/root/.gazebo/models/turtlebot3_waffle_pi/model.sdf</path>
+            </simulationConfigs>
+          </SimulationConfigs>
+        </simulation>
+        <Module type="software" name="laser_avoidance" ref="0c95eb9da4e156248d865fea1499ca3fff00000000000000baffffaa140000-00">
+          <style px="-4.0" py="0.0" width="76.0" height="76.0"/>
+        </Module>
+      </Robot>
+      <Links/>
+      <Styles>
+        <styles>
+          <Turtlebot3_Burger px="317.921875" py="474.0" width="338.0" height="383.0"/>
+          <laser_avoidance px="-4.0" py="0.0" width="76.0" height="76.0"/>
+          <Turtlebot3_Waffle px="759.921875" py="393.0" width="338.0" height="383.0"/>
+        </styles>
+      </Styles>
+    </System>
+  </editors>
+  <lastFile></lastFile>
+  <simulationInfo>
+    <simulationHwName>park_edge</simulationHwName>
+    <simulationHwTarget>10.11.51.152</simulationHwTarget>
+    <SimulationConfigs>
+      <simulationConfigs>
+        <robotName>Turtlebot3_Burger</robotName>
+        <namespace>tb1</namespace>
+        <x>2</x>
+        <y>3</y>
+        <theta>1</theta>
+        <simulator>gazebo</simulator>
+        <path>/root/.gazebo/models/turtlebot3_burger/model.sdf</path>
+      </simulationConfigs>
+      <simulationConfigs>
+        <robotName>Turtlebot3_Waffle</robotName>
+        <namespace>tb2</namespace>
+        <x>1</x>
+        <y>3</y>
+        <theta>2</theta>
+        <simulator>gazebo</simulator>
+        <path>/root/.gazebo/models/turtlebot3_waffle_pi/model.sdf</path>
+      </simulationConfigs>
+    </SimulationConfigs>
+  </simulationInfo>
+</kr.ac.kangwon.rodos.model.SharedUserState>

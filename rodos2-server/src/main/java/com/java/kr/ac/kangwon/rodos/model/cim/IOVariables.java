@@ -3,18 +3,25 @@ package com.java.kr.ac.kangwon.rodos.model.cim;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public class IOVariables {
 
-	@JacksonXmlProperty(localName = "inputs")
+	@JacksonXmlElementWrapper(localName = "Inputs")
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
+	@JacksonXmlProperty(localName = "input")
 	private List<Input> Inputs;
 
-	@JacksonXmlProperty(localName = "outputs")
+	@JacksonXmlElementWrapper(useWrapping = false)
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
+	@JacksonXmlProperty(localName = "output")
 	private List<Output> Outputs;
 
-	@JacksonXmlProperty(localName = "inOuts")
+	@JacksonXmlElementWrapper(useWrapping = false)
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
+	@JacksonXmlProperty(localName = "inOut")
 	private List<InOut> InOuts;
 
 	public void setInputs(List<Input> inputs) {

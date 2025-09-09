@@ -3,8 +3,8 @@ package com.java.kr.ac.kangwon.rodos.model.sim;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.java.kr.ac.kangwon.rodos.model.cim.Property;
@@ -24,23 +24,30 @@ public class Properties {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	public CompilerType compilerType;
 
-	@JacksonXmlElementWrapper(useWrapping = false)
-	@JacksonXmlProperty(localName = "ExecutionType")
+	@JacksonXmlElementWrapper(localName = "ExecutionTypes")
+	@JacksonXmlProperty(localName = "Item")
 	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	public List<ExecutionType> executionTypes;
 
-	@JacksonXmlElementWrapper(useWrapping = false)
+	@JacksonXmlElementWrapper(localName = "Libraries")
 	@JacksonXmlProperty(localName = "Library")
 	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private List<Library> libraries;
+
+	@JacksonXmlProperty(localName = "Organization")
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private Organization organization;
 
 	// Prevent duplicate serialization
 	@JsonIgnore
 	public OSType ostype;
 
 	public Properties() {
+		properties = new ArrayList<>();
 		osType = new OSType();
 		compilerType = new CompilerType();
+		executionTypes = new ArrayList<>();
+		libraries = new ArrayList<>();
 	}
 
 	public void addProperty(Property property) {
@@ -57,6 +64,9 @@ public class Properties {
 	}
 
 	public List<Property> getProperties() {
+		// 모든 Property 반환 (NONE 타입도 포함)
+		if (this.properties == null)
+			return new ArrayList<>();
 		return this.properties;
 	}
 

@@ -3,16 +3,25 @@ package com.java.kr.ac.kangwon.rodos.model.sim;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.java.kr.ac.kangwon.rodos.model.cim.NameValue;
 
 public class ModelCase {
 
+	@JacksonXmlProperty(localName = "simulator")
 	public String simulator;
 
+	@JacksonXmlElementWrapper(localName = "modelFiles")
+	@JacksonXmlProperty(localName = "modelFile")
 	public List<ModelFile> modelFiles;
 
+	@JacksonXmlElementWrapper(localName = "dynamicSWs")
+	@JacksonXmlProperty(localName = "dynamicSW")
 	public List<DynamicSW> dynamicSWs;
 
+	@JacksonXmlElementWrapper(localName = "additionalInfo")
+	@JacksonXmlProperty(localName = "info")
 	public List<NameValue> additionalInfo;
 
 	public String getSimulator() {
@@ -40,7 +49,7 @@ public class ModelCase {
 		return this.dynamicSWs;
 	}
 
-	public void addModelFile(DynamicSW dynamicSW) {
+	public void addDynamicSW(DynamicSW dynamicSW) {
 		if (this.dynamicSWs != null) {
 			this.dynamicSWs.add(dynamicSW);
 		} else {

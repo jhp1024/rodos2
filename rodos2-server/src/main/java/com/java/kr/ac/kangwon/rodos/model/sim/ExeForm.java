@@ -8,14 +8,19 @@ import com.java.kr.ac.kangwon.rodos.model.cim.Property;
 
 public class ExeForm {
 
-	@JacksonXmlProperty(localName = "exeFileURL")
+	@JacksonXmlProperty(localName = "ExeFileURL")
 	private String exeFileURL;
 
-	@JacksonXmlProperty(localName = "shell")
-	private String shell;
+	@JacksonXmlProperty(localName = "ShellCmd")
+	private String shellCmd;
 
 	@JacksonXmlProperty(localName = "properties")
 	private List<Property> properties;
+
+	// Jackson 역직렬화를 위한 기본 생성자
+	public ExeForm() {
+		this.properties = new ArrayList<>();
+	}
 
 	public String getExeFileURL() {
 		return exeFileURL;
@@ -25,12 +30,12 @@ public class ExeForm {
 		this.exeFileURL = exeFileURL;
 	}
 
-	public String getShell() {
-		return shell;
+	public String getShellCmd() {
+		return shellCmd;
 	}
 
-	public void setShell(String shell) {
-		this.shell = shell;
+	public void setShellCmd(String shell) {
+		this.shellCmd = shell;
 	}
 
 	public List<Property> getProperties() {

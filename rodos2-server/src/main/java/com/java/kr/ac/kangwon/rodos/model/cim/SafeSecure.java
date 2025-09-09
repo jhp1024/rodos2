@@ -3,9 +3,17 @@ package com.java.kr.ac.kangwon.rodos.model.cim;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.java.kr.ac.kangwon.rodos.model.Enumerate;
 
 public class SafeSecure {
+
+	@JacksonXmlProperty(localName = "Safety")
+	private Safety safety;
+
+	@JacksonXmlProperty(localName = "Security")
+	private Security security;
 
 	private Enumerate.PLSILType overallValidSafetyLevelType;
 

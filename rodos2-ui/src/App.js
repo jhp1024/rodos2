@@ -1,39 +1,24 @@
 import React from 'react';
-import { Routes, Route, NavLink, useMatch } from 'react-router-dom';
-import IDE from './pages/IDE';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import IDE from './components/ide/IDE';
+import ErrorBoundary from './components/common/ErrorBoundary';
 
 function App() {
-  // useMatch로 현재 경로가 루트(/)인지 확인
-  const isRoot = useMatch({ path: "/", end: true });
+  const location = useLocation();
 
   return (
-    <div className="App">
-      {/* 루트(/)에서만 버튼 보이기 */}
-      {isRoot && (
-        <div className="button-container">
-          <NavLink
-            to="/ide"
-            className={({ isActive }) =>
-              "main-button" + (isActive ? " active" : "")
-            }
-          >
-            IDE
-          </NavLink>
-          <NavLink
-            to="/ime"
-            className={({ isActive }) =>
-              "main-button" + (isActive ? " active" : "")
-            }
-          >
-            IME
-          </NavLink>
-        </div>
-      )}
-      <Routes>
-        <Route path="/ide" element={<IDE />} />
-        {/* <Route path="/ime" element={<IME />} /> */}
-      </Routes>
-    </div>
+    <ErrorBoundary>
+      <div className="App">
+        <Routes location={location}>
+          <Route path="/" element={<Navigate to="/ide" replace />} />
+          <Route path="/ide" element={<IDE />} />
+          <Route path="/ide/*" element={<IDE />} />
+          {/* <Route path="/ime" element={<IME />} /> */}
+          {/* 404 페이지 처리 */}
+          <Route path="*" element={<Navigate to="/ide" replace />} />
+        </Routes>
+      </div>
+    </ErrorBoundary>
   );
 }
 

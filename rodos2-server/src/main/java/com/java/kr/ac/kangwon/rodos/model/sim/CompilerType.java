@@ -5,9 +5,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public class CompilerType {
 
-	@JacksonXmlProperty(localName = "osName")
+	@JacksonXmlProperty(localName = "osname")
 	@JsonInclude(JsonInclude.Include.NON_EMPTY)
-	private String osName;
+	public String osName;
 
 	@JacksonXmlProperty(localName = "verRangeOS")
 	@JsonInclude(JsonInclude.Include.NON_NULL)
@@ -21,7 +21,7 @@ public class CompilerType {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private RangeString verRangeCompiler;
 
-	@JacksonXmlProperty(localName = "bitsnCPUarch")
+	@JacksonXmlProperty(localName = "bitnCPUarch")
 	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private String bitsnCPUarch;
 

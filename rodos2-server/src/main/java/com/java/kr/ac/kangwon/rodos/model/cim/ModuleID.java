@@ -1,7 +1,12 @@
 package com.java.kr.ac.kangwon.rodos.model.cim;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
 public class ModuleID {
+    @JacksonXmlProperty(localName = "mID")
     String mID;
+
+    @JacksonXmlProperty(localName = "iID")
     String iID;
 
     public String getmID() {

@@ -6,12 +6,11 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 public class Input extends IOVariable {
 
 	@JacksonXmlElementWrapper(useWrapping = false)
-	@JacksonXmlProperty(localName = "inputs")
+	@JacksonXmlProperty(localName = "input")
 	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	private List<Input> inputs;
 
