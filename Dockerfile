@@ -1,5 +1,5 @@
 # RODOS2 단일 JAR 배포용 Dockerfile
-FROM openjdk:17-jre-slim
+FROM eclipse-temurin:17-jre
 
 WORKDIR /app
 
