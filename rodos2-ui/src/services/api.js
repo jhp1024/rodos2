@@ -244,7 +244,7 @@ export const canvasAPI = {
     },
 
     async refreshSimulationConfig() {
-        const response = await fetch('/app/api/simulation-config/refresh', {
+        const response = await fetch('/api/simulation-config/refresh', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         });

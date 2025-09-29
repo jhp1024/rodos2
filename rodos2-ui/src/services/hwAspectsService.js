@@ -3,7 +3,7 @@ export const hwAspectsService = {
     // Registry에서 HW 모듈 목록 조회 (robot, edge, cloud classification)
     async getHWModules() {
         try {
-            const response = await fetch('/app/api/registry/all');
+            const response = await fetch('/api/registry/all');
             if (response.ok) {
                 const data = await response.json();
                 const hwModules = [];

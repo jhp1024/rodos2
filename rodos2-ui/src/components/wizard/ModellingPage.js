@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useModellingState } from '../../hooks/useModellingState';
 import '../../styles/wizard/ModellingPage.css';
 
@@ -16,23 +16,32 @@ function ModellingPage({ modelling, onChange }) {
         loadModelling
     } = useModellingState();
 
-    // modelling prop이 변경될 때 로드
+    // 이전 modelling 값을 추적하기 위한 ref
+    const prevModellingRef = useRef();
+    const isInitialLoad = useRef(true);
+
+    // modelling prop이 변경될 때 로드 (초기 로드가 아닐 때만)
     useEffect(() => {
-        if (modelling) {
+        if (modelling && (isInitialLoad.current || JSON.stringify(modelling) !== JSON.stringify(prevModellingRef.current))) {
             loadModelling(modelling);
+            prevModellingRef.current = modelling;
+            isInitialLoad.current = false;
         }
     }, [modelling, loadModelling]);
 
-    // modelCases가 변경될 때 onChange 호출
+    // modelCases가 변경될 때 onChange 호출 (debounce 적용)
     useEffect(() => {
-        if (onChange) {
-            const updatedModelling = {
-                list_simulationModel: modelCases
-            };
-            onChange(updatedModelling);
+        if (!isInitialLoad.current && onChange) {
+            const timeoutId = setTimeout(() => {
+                const updatedModelling = {
+                    list_simulationModel: modelCases
+                };
+                onChange(updatedModelling);
+            }, 100); // 100ms debounce
+
+            return () => clearTimeout(timeoutId);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [modelCases]); // onChange를 의존성 배열에서 제거하여 무한 루프 방지
+    }, [modelCases, onChange]);
 
     const [selectedModelCase, setSelectedModelCase] = useState(null);
     const [newModelCase, setNewModelCase] = useState({

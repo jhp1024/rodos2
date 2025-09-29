@@ -135,6 +135,13 @@ function IDE() {
     }
   };
 
+  // Workspace 갱신 핸들러
+  const handleWorkspaceRefresh = () => {
+    if (sidebarRef.current && sidebarRef.current.refreshWorkspace) {
+      sidebarRef.current.refreshWorkspace();
+    }
+  };
+
   console.log('IDE rendered with wizard state:', { wizardOpen, wizardType });
 
   return (
@@ -151,6 +158,7 @@ function IDE() {
         wizardData={wizardData}
         onClose={closeWizard}
         onComplete={handleWizardComplete}
+        onWorkspaceRefresh={handleWorkspaceRefresh}
       />
     </div>
   );

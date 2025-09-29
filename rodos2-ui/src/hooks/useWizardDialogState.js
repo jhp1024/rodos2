@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { DEFAULT_SOFTWARE_MODULE_STATE, STEP_COMPLETION_CRITERIA } from '../constants/softwareModule';
+import { wizardXMLService } from '../services/wizardService';
 
 // 스키마에서 초기 상태 생성 함수
 const initStateFromSchema = (schema) => {
@@ -39,7 +40,7 @@ const initStateFromSchema = (schema) => {
     };
 };
 
-export function useWizardDialogState(open, type, wizardData, onClose, onComplete) {
+export function useWizardDialogState(open, type, wizardData, onClose, onComplete, onWorkspaceRefresh) {
     const [moduleState, setModuleState] = useState(null);
 
     // moduleState 변경 시 로그
@@ -55,7 +56,7 @@ export function useWizardDialogState(open, type, wizardData, onClose, onComplete
     // 스키마 로드 및 초기 상태 설정
     useEffect(() => {
         if (open && (type === 'SIM' || type === 'sim')) {
-            fetch('/app/api/model/sim')
+            fetch('/api/model/sim')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
@@ -367,7 +368,7 @@ export function useWizardDialogState(open, type, wizardData, onClose, onComplete
             executableForm: moduleState.executableForm || {}
         };
 
-        const response = await fetch('/app/api/module/update', {
+        const response = await fetch('/api/module/update', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(moduleData)
@@ -442,19 +443,14 @@ export function useWizardDialogState(open, type, wizardData, onClose, onComplete
 
         console.log('saveModuleToXML - moduleData:', moduleData);
 
-        const response = await fetch('/app/api/module/save-xml', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(moduleData)
+        // Workspace 갱신 콜백을 포함하여 XML 저장
+        await wizardXMLService.saveXML(moduleData, null, () => {
+            console.log('XML saved successfully, refreshing workspace...');
+            if (onWorkspaceRefresh && typeof onWorkspaceRefresh === 'function') {
+                onWorkspaceRefresh();
+            }
         });
-
-        if (!response.ok) {
-            throw new Error(`Failed to save XML: ${response.status}`);
-        }
-
-        const result = await response.text();
-        console.log('XML saved:', result);
-    }, [moduleState]);
+    }, [moduleState, onWorkspaceRefresh]);
 
     // 단계 완료 여부 확인
     const isStepCompleted = useCallback((stepIdx) => {

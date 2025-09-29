@@ -113,7 +113,14 @@ export function useModellingState() {
     // 데이터 로드
     const loadModelling = useCallback((data) => {
         if (data && data.list_simulationModel) {
-            setModelCases(data.list_simulationModel);
+            // 현재 상태와 비교하여 실제로 다를 때만 업데이트
+            setModelCases(prevCases => {
+                const newCases = data.list_simulationModel;
+                if (JSON.stringify(prevCases) !== JSON.stringify(newCases)) {
+                    return newCases;
+                }
+                return prevCases;
+            });
         }
     }, []);
 

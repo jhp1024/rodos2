@@ -3,7 +3,7 @@ export const swAspectsService = {
     // Registry에서 SW 모듈 목록 조회 (robot classification)
     async getSWModules() {
         try {
-            const response = await fetch('/app/api/registry/all');
+            const response = await fetch('/api/registry/all');
             if (response.ok) {
                 const data = await response.json();
                 return data.robot || [];

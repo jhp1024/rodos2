@@ -48,7 +48,7 @@ export function useCheckPageState({
 
             console.log('Sending module data to backend:', moduleData);
 
-            const response = await fetch('/app/api/module/preview-xml', {
+            const response = await fetch('/api/module/preview-xml', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(moduleData)

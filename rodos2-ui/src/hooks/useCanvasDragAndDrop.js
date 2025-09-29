@@ -21,10 +21,15 @@ export function useCanvasDragAndDrop(canvasRef, hwModules, dragOffset, draggedMo
             console.log('드롭 위치 계산됨:', { x, y });
 
             if (type === 'hw') {
-                // Edge, Cloud, Robot 모듈을 육각형으로 추가
+                // Edge, Cloud 모듈을 육각형으로 추가
                 console.log('HW 모듈 추가 시도:', { name, x, y, moduleType });
                 addHWModule(name, x, y, moduleType);
                 console.log('HW 모듈 추가 완료');
+            } else if (type === 'controller') {
+                // Controller 모듈을 직사각형으로 추가
+                console.log('Controller 모듈 추가 시도:', { name, x, y, moduleType });
+                addHWModule(name, x, y, moduleType);
+                console.log('Controller 모듈 추가 완료');
             }
         } catch (error) {
             console.error('드롭 데이터 파싱 오류:', error);
@@ -45,6 +50,18 @@ export function useCanvasDragAndDrop(canvasRef, hwModules, dragOffset, draggedMo
             console.log('드롭 데이터 파싱됨:', { type, name, moduleType, sourceHwIdx, sourceSwIdx });
 
             if (type === 'sw') {
+                const hwModule = hwModules[idx];
+
+                // Controller 모듈 위에 Software 모듈을 드롭하는 경우 CompositeDialog 열기
+                if (hwModule && hwModule.moduleType === 'controller') {
+                    console.log('Controller 모듈 위에 SW 모듈 드롭 - CompositeDialog 열기');
+                    if (onOpenCompositeWizard) {
+                        onOpenCompositeWizard(idx, hwModule);
+                    }
+                    setDragOverHexIdx(null);
+                    return;
+                }
+
                 // 육각형 모듈의 경우 - 기존 계산 사용
                 const hexRect = e.currentTarget.getBoundingClientRect();
                 const { x, y } = calculateHexDropPosition(e, hexRect);

@@ -51,7 +51,7 @@ function RegistryModules({ expanded, selectedKey, onToggle, onSelect, onContextM
             if (action === 'open') {
                 if (node.type === 'module') {
                     // Registry 모듈 정보를 새 탭에서 열기
-                    window.open(`/app/api/registry/module/${node.key}`, '_blank');
+                    window.open(`/api/registry/module/${node.key}`, '_blank');
                 } else if (node.type === 'directory') {
                     // 디렉토리 토글
                     onToggle(node.key);
@@ -59,7 +59,7 @@ function RegistryModules({ expanded, selectedKey, onToggle, onSelect, onContextM
             } else if (action === 'edit') {
                 if (node.type === 'module') {
                     // Registry 모듈 편집
-                    window.open(`/app/api/registry/module/${node.key}/edit`, '_blank');
+                    window.open(`/api/registry/module/${node.key}/edit`, '_blank');
                 }
             } else if (action === 'delete') {
                 if (node.type === 'module') {

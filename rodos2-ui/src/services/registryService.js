@@ -3,7 +3,7 @@ export const registryService = {
     // 모든 모듈 조회
     async getAllModules() {
         try {
-            const response = await fetch('/app/api/registry/all');
+            const response = await fetch('/api/registry/all');
             if (response.ok) {
                 return await response.json();
             } else {
@@ -18,7 +18,7 @@ export const registryService = {
     // 특정 모듈 조회
     async getModule(moduleId) {
         try {
-            const response = await fetch(`/app/api/registry/module/${moduleId}`);
+            const response = await fetch(`/api/registry/module/${moduleId}`);
             if (response.ok) {
                 return await response.json();
             } else {
@@ -33,7 +33,7 @@ export const registryService = {
     // 모듈 삭제
     async deleteModule(moduleId) {
         try {
-            const response = await fetch('/app/api/registry/module/delete', {
+            const response = await fetch('/api/registry/module/delete', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ moduleId })

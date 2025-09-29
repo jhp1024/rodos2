@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
-import Hexagon from '../common/Hexagon';
-import Circle from '../common/Circle';
+import { Hexagon, Circle, Rectangle } from '../common';
 import { useCanvasState } from '../../hooks/useCanvasState';
 import { useCanvasDragAndDrop } from '../../hooks/useCanvasDragAndDrop';
 import '../../styles/ide/Canvas.css';
@@ -208,11 +207,26 @@ const Canvas = forwardRef(({ onOpenCompositeWizard }, ref) => {
                         onContextMenu={e => handleHWModuleContextMenu(e, idx)}
                     >
                         <div className="hw-module-inner">
-                            {/* 육각형 - 모듈 타입에 따른 색상 */}
-                            <Hexagon
-                                size={240}
-                                color={hw.isComposite ? getModuleTypeColor(hw.originalModuleType || hw.moduleType) : getModuleTypeColor(hw.moduleType)}
-                            />
+                            {/* 모듈 타입에 따라 다른 모양 렌더링 */}
+                            {hw.isComposite ? (
+                                // Composite 모듈은 항상 육각형으로 표시
+                                <Hexagon
+                                    size={240}
+                                    color={getModuleTypeColor(hw.originalModuleType || hw.moduleType)}
+                                />
+                            ) : hw.moduleType === 'controller' ? (
+                                // Controller 모듈은 직사각형으로 표시
+                                <Rectangle
+                                    size={240}
+                                    color={getModuleTypeColor(hw.moduleType)}
+                                />
+                            ) : (
+                                // Edge, Cloud 모듈은 육각형으로 표시
+                                <Hexagon
+                                    size={240}
+                                    color={getModuleTypeColor(hw.moduleType)}
+                                />
+                            )}
                             <div className="hw-module-label">
                                 {hw.name} {hw.isComposite ? '(Composite)' : `(${hw.moduleType})`}
                             </div>

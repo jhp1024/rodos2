@@ -3,7 +3,7 @@ export const workspaceService = {
     // 워크스페이스 구조 조회
     async getWorkspaceStructure() {
         try {
-            const response = await fetch('/app/api/registry/workspace/structure');
+            const response = await fetch('/api/registry/workspace/structure');
             if (response.ok) {
                 return await response.json();
             } else {
@@ -21,7 +21,7 @@ export const workspaceService = {
             const formData = new FormData();
             formData.append('file', file);
 
-            const response = await fetch('/app/api/registry/module/upload', {
+            const response = await fetch('/api/registry/module/upload', {
                 method: 'POST',
                 body: formData
             });
@@ -40,7 +40,7 @@ export const workspaceService = {
     // 파일 삭제
     async deleteFile(filename) {
         try {
-            const response = await fetch('/app/api/registry/module/delete', {
+            const response = await fetch('/api/registry/module/delete', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ filename })

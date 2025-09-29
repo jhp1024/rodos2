@@ -170,7 +170,7 @@ export const wizardXMLService = {
     // 백엔드에 XML 생성 요청
     async generateXML(wizardData) {
         try {
-            const response = await fetch('/app/api/module/preview-xml', {
+            const response = await fetch('/api/module/preview-xml', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -190,9 +190,9 @@ export const wizardXMLService = {
     },
 
     // XML 파일 저장
-    async saveXML(wizardData, fileName) {
+    async saveXML(wizardData, fileName, onSuccess) {
         try {
-            const response = await fetch('/app/api/module/save-xml', {
+            const response = await fetch('/api/module/save-xml', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -204,7 +204,14 @@ export const wizardXMLService = {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            return await response.text();
+            const result = await response.text();
+
+            // 성공 시 콜백 호출
+            if (onSuccess && typeof onSuccess === 'function') {
+                onSuccess();
+            }
+
+            return result;
         } catch (error) {
             console.error('Error saving XML:', error);
             throw error;

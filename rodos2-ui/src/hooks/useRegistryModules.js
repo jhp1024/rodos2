@@ -11,7 +11,7 @@ export function useRegistryModules() {
             setLoading(true);
 
             // Registry에서 모든 모듈을 가져와서 자동으로 분류
-            const response = await fetch('/app/api/registry/all');
+            const response = await fetch('/api/registry/all');
             if (response.ok) {
                 const data = await response.json();
 
@@ -78,7 +78,7 @@ export function useRegistryModules() {
                     },
                     {
                         key: 'controller-modules',
-                        label: 'Robot',
+                        label: 'Controller',
                         type: 'directory',
                         moduleType: 'controller',
                         children: (data.controller || []).map(module => ({
@@ -119,8 +119,16 @@ export function useRegistryModules() {
                 moduleType: node.moduleType
             }));
             e.dataTransfer.effectAllowed = 'copy';
+        } else if (node.moduleType === 'controller') {
+            // Controller Modules -> Controller 모듈 (직사각형)
+            e.dataTransfer.setData('text/plain', JSON.stringify({
+                type: 'controller',
+                name: node.label,
+                moduleType: node.moduleType
+            }));
+            e.dataTransfer.effectAllowed = 'copy';
         } else {
-            // Edge, Cloud, Robot -> HW 모듈 (육각형)
+            // Edge, Cloud -> HW 모듈 (육각형)
             e.dataTransfer.setData('text/plain', JSON.stringify({
                 type: 'hw',
                 name: node.label,

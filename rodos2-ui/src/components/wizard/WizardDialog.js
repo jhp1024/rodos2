@@ -67,7 +67,7 @@ const getStepsByType = (type) => {
     }
 };
 
-function WizardDialog({ open, type, wizardData, onClose, onComplete }) {
+function WizardDialog({ open, type, wizardData, onClose, onComplete, onWorkspaceRefresh }) {
     const {
         moduleState,
         activeStep,
@@ -81,7 +81,7 @@ function WizardDialog({ open, type, wizardData, onClose, onComplete }) {
         handleComplete,
         isStepCompleted,
         isStepChecked
-    } = useWizardDialogState(open, type, wizardData, onClose, onComplete);
+    } = useWizardDialogState(open, type, wizardData, onClose, onComplete, onWorkspaceRefresh);
 
     // 타입에 따른 스텝 가져오기
     const steps = getStepsByType(type);
